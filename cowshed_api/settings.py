@@ -10,7 +10,6 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
-from celery.schedules import crontab
 from pathlib import Path
 import os
 
@@ -138,20 +137,12 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 
 # Celery configuration
-
 CELERY_BROKER_URL = os.environ.get("CELERY_BROKER", "redis://redis:6379/0")
 CELERY_RESULTS_BACKEND = os.environ.get("CELERY_BACKEND", "redis://redis:6379/0")
 CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
+CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"
 
-
-# CELERY_BEAT_SCHEDULE = {
-#     "feed_and_milk_cows_task": {
-#         "task": "cmanager.tasks.feed_and_milk_cows",
-#         "schedule": crontab(minute="*/1"),  # every minute for example
-#     },
-# }
-
-
+# Logging config
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,

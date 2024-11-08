@@ -34,6 +34,22 @@ class Cow(models.Model):
     def __str__(self):
         return self.name
 
+    def delete(self, *args, **kwargs):
+        # Delete associated tasks
+        feed_task_name = f"feed-cow-{self.id}"
+        milk_task_name = f"milk-cow-{self.id}"
+
+        for task_name in [feed_task_name, milk_task_name]:
+            try:
+                task = PeriodicTask.objects.get(name=task_name)
+                task.delete()
+                print(f"Deleted periodic task for {task_name}")
+            except PeriodicTask.DoesNotExist:
+                print(f"No periodic task found for {task_name}")
+
+        # Call the parent delete method
+        super().delete(*args, **kwargs)
+
 
 class Weight(models.Model):
     """Weight object representation."""
@@ -70,21 +86,24 @@ class Feeding(models.Model):
         )
 
         task_name = f"feed-cow-{self.cow.id}"
-        PeriodicTask.objects.update_or_create(
+        task, created = PeriodicTask.objects.update_or_create(
             name=task_name,
             defaults={
-                "task": "cmanager.tasks.feed_and_milk_cows",
+                "task": "cmanager.tasks.feed_cow",
                 "crontab": schedule,
                 "args": json.dumps([self.cow.id]),
             },
         )
+        logger.info(f"Periodic task {'created' if created else 'updated'} for {task_name}")
 
     def delete(self, *args, **kwargs):
         task_name = f"feed-cow-{self.cow.id}"
         try:
             task = PeriodicTask.objects.get(name=task_name)
             task.delete()
+            logger.info(f"Periodic task {task_name} deleted!")
         except PeriodicTask.DoesNotExist:
+            logger.warning(f"Periodic task {task_name} does not exist!")
             pass
         super().delete(*args, **kwargs)
 
@@ -113,20 +132,24 @@ class MilkProduction(models.Model):
         )
 
         task_name = f"milk-cow-{self.cow.id}"
-        PeriodicTask.objects.update_or_create(
+        task, created = PeriodicTask.objects.update_or_create(
             name=task_name,
             defaults={
-                "task": "cmanager.tasks.feed_and_milk_cows",
+                "task": "cmanager.tasks.milk_cow",
                 "crontab": schedule,
                 "args": json.dumps([self.cow.id]),
             },
         )
+
+        logger.info(f"Periodic task {'created' if created else 'updated'} for {task_name}")
 
     def delete(self, *args, **kwargs):
         task_name = f"milk-cow-{self.cow.id}"
         try:
             task = PeriodicTask.objects.get(name=task_name)
             task.delete()
+            logger.info(f"Periodic task {task_name} deleted!")
         except PeriodicTask.DoesNotExist:
+            logger.warning(f"Periodic task {task_name} does not exist!")
             pass
         super().delete(*args, **kwargs)

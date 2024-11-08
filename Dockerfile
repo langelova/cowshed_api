@@ -1,6 +1,6 @@
 FROM python:3.11-alpine
 
-WORKDIR /usr/src/app
+WORKDIR /app
 
 # prevent Python from writting .pyc files
 ENV PYTHONDONTWRITEBYTECODE 1
@@ -11,7 +11,7 @@ ENV PYTHONBUFFERED 1
 COPY requirements.txt .
 
 RUN pip install --upgrade pip
-COPY ./requirements.txt /usr/src/app/requirements.txt
+COPY ./requirements.txt /app/requirements.txt
 
 RUN python -m venv /py && \
     /py/bin/pip install --upgrade pip && \
@@ -26,8 +26,8 @@ RUN python -m venv /py && \
 # RUN pip install -r requirements.txt
 ENV PATH="/py/bin:$PATH"
 
-COPY ./entrypoint.sh /usr/src/app/entrypoint.sh
+COPY ./entrypoint.sh /app/entrypoint.sh
 
-COPY . /usr/src/app/
+COPY . /app/
 
-ENTRYPOINT [ "/usr/src/app/entrypoint.sh" ]
+ENTRYPOINT [ "/app/entrypoint.sh" ]

@@ -1,0 +1,93 @@
+version: '3.8'
+
+services:
+
+  redis:
+    image: redis:7.4-alpine
+
+  db:
+    image: postgres:13-alpine
+    volumes:
+      - dev-db-data:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_DB=devdb
+      - POSTGRES_USER=devuser
+      - POSTGRES_PASSWORD=changeme
+
+  celery:
+    container_name: celery
+    build:
+      context: .
+    command: celery --app=cowshed_api worker -l INFO
+    restart: on-failure
+    volumes:
+      - .:/app
+    environment:
+      - DEBUG=1
+      - SECRET_KEY=123
+      - ALLOWED_HOSTS=localhost, 127.0.0.1
+      - DB_HOST=db
+      - DB_NAME=devdb
+      - DB_USER=devuser
+      - DB_PASS=changeme
+      - DB_PORT=5432
+    depends_on:
+      - django
+      - db
+      - redis
+
+  celery-beat:
+    container_name: celery-beat
+    build:
+      context: .
+    command: celery --app=cowshed_api beat -l INFO
+    volumes:
+      - .:/app
+    environment:
+      - DEBUG=1
+      - SECRET_KEY=123
+      - ALLOWED_HOSTS=localhost, 127.0.0.1
+      - DB_HOST=db
+      - DB_NAME=devdb
+      - DB_USER=devuser
+      - DB_PASS=changeme
+      - DB_PORT=5432
+    depends_on:
+      - django
+      - db
+      - redis
+
+
+  django:
+    container_name: django
+    build:
+      context: .
+    # command: gunicorn cowshed_api.wsgi:application --bind 0.0.0.0:8000
+    command : python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .:/app
+    ports:
+      - 8000:8000
+    environment:
+      - DEBUG=1
+      - SECRET_KEY=123
+      - ALLOWED_HOSTS=localhost,127.0.0.1
+      - DB_HOST=db
+      - DB_NAME=devdb
+      - DB_USER=devuser
+      - DB_PASS=changeme
+      - DB_PORT=5432
+    depends_on:
+      - redis
+      - db
+
+
+volumes:
+  dev-db-data:
+
+
+
+
+

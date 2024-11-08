@@ -76,10 +76,10 @@ class CowSerializer(serializers.ModelSerializer):
         instance.save()
 
         if weight_data:
-            Weight.objects.update_or_create(animal=instance, defaults=weight_data)
+            Weight.objects.update_or_create(cow=instance, defaults=weight_data)
         if feeding_data:
-            Feeding.objects.update_or_create(animal=instance, defaults=feeding_data)
+            Feeding.objects.update_or_create(cow=instance, defaults=feeding_data)
         if milk_production_data:
-            MilkProduction.objects.update_or_create(animal=instance, defaults=milk_production_data)
+            MilkProduction.objects.update_or_create(cow=instance, defaults=milk_production_data)
 
         return instance
