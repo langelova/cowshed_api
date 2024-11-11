@@ -45,18 +45,12 @@ git clone https://github.com/langelova/cowshed_api.git
 docker-compose up --build
 ```
 
-3.  **Run migrations**:
-
-```
-docker-compose exec django python manage.py migrate
-```
-
-4. **Generate sample data**:
+3. **Generate sample data**:
 ```
 docker exec -it django python manage.py generate_random_data --num_cows 20
 ```
 
-5. **Run tests**:
+4. **Run tests**:
 ```
 docker exec -it django python manage.py test cmanager
 ```

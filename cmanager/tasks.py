@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 def feed_cow(cow_id):
     try:
         cow = Cow.objects.get(id=cow_id)
-        logger.info(f"Feeding cow {cow.name} at {datetime.now()}")
+        logger.info(f"Feeding cow {cow.id} at {datetime.now()}")
     except Cow.DoesNotExist:
         logger.error(f"Cow with ID {cow_id} does not exist.")
 
@@ -22,7 +22,7 @@ def feed_cow(cow_id):
 def milk_cow(cow_id):
     try:
         cow = Cow.objects.get(id=cow_id)
-        logger.info(f"Milikng cow {cow.name} at {datetime.now()}")
+        logger.info(f"Milikng cow {cow.id} at {datetime.now()}")
     except Cow.DoesNotExist:
         logger.error(f"Cow with ID {cow_id} does not exist.")
 
