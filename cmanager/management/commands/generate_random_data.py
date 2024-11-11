@@ -1,10 +1,12 @@
 # generate_random_data.py
+import logging
 import random
 from datetime import datetime, timedelta
+
 from django.core.management.base import BaseCommand
 from django.utils import timezone
+
 from cmanager.models import Cow, Feeding, MilkProduction, Weight
-import logging
 
 logger = logging.getLogger(__name__)
 
@@ -51,10 +53,14 @@ class Command(BaseCommand):
 
             # Create Feeding data for the cow
             feeding_amount_kg = round(random.uniform(3, 10), 2)
-            feeding_cron_schedule = "0 */6 * * *"  # Example cron for feeding every 6 hours
+            feeding_cron_schedule = (
+                "0 */6 * * *"  # Example cron for feeding every 6 hours
+            )
             try:
                 Feeding.objects.create(
-                    cow=cow, amount_kg=feeding_amount_kg, cron_schedule=feeding_cron_schedule
+                    cow=cow,
+                    amount_kg=feeding_amount_kg,
+                    cron_schedule=feeding_cron_schedule,
                 )
             except Exception as e:
                 logger.error(f"Error with creating feeding data: {e}")
@@ -63,10 +69,14 @@ class Command(BaseCommand):
             # Create MilkProduction data for the cow
             if sex == "F":  # Assuming only females produce milk
                 milk_amount_l = round(random.uniform(2, 10), 2)
-                milk_cron_schedule = "0 */8 * * *"  # Example cron for milking every 8 hours
+                milk_cron_schedule = (
+                    "0 */8 * * *"  # Example cron for milking every 8 hours
+                )
                 try:
                     MilkProduction.objects.create(
-                        cow=cow, amount_l=milk_amount_l, cron_schedule=milk_cron_schedule
+                        cow=cow,
+                        amount_l=milk_amount_l,
+                        cron_schedule=milk_cron_schedule,
                     )
                 except Exception as e:
                     logger.error(f"Error with creating milk production data: {e}")
@@ -80,7 +90,9 @@ class Command(BaseCommand):
                 days=random.randint(1, 30)
             )  # Measured within the last month
             try:
-                Weight.objects.create(cow=cow, mass_kg=weight_kg, last_measured=last_measured)
+                Weight.objects.create(
+                    cow=cow, mass_kg=weight_kg, last_measured=last_measured
+                )
             except Exception as e:
                 logger.error(f"Error with creating weight production data: {e}")
                 return
@@ -92,5 +104,7 @@ class Command(BaseCommand):
             )
 
         self.stdout.write(
-            self.style.SUCCESS(f"Successfully created {num_cows} cows with random data.")
+            self.style.SUCCESS(
+                f"Successfully created {num_cows} cows with random data."
+            )
         )

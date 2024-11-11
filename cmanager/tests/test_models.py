@@ -1,8 +1,10 @@
-from django.test import TestCase
-from django.utils import timezone
-from cmanager.models import Cow, Feeding, MilkProduction, Weight
 import random
 from datetime import timedelta
+
+from django.test import TestCase
+from django.utils import timezone
+
+from cmanager.models import Cow, Feeding, MilkProduction, Weight
 
 
 class cowModelTests(TestCase):
@@ -27,7 +29,9 @@ class cowModelTests(TestCase):
         )
         # Set up Weight for the cow
         self.weight = Weight.objects.create(
-            cow=self.cow, mass_kg=1200.0, last_measured=timezone.now() - timedelta(days=10)
+            cow=self.cow,
+            mass_kg=1200.0,
+            last_measured=timezone.now() - timedelta(days=10),
         )
 
     def test_cow_creation(self):

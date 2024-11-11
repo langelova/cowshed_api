@@ -3,7 +3,8 @@ Serializers for the cow APIs.
 """
 
 from rest_framework import serializers
-from .models import Cow, Weight, Feeding, MilkProduction
+
+from .models import Cow, Feeding, MilkProduction, Weight
 
 
 class WeightSerializer(serializers.ModelSerializer):
@@ -80,6 +81,8 @@ class CowSerializer(serializers.ModelSerializer):
         if feeding_data:
             Feeding.objects.update_or_create(cow=instance, defaults=feeding_data)
         if milk_production_data:
-            MilkProduction.objects.update_or_create(cow=instance, defaults=milk_production_data)
+            MilkProduction.objects.update_or_create(
+                cow=instance, defaults=milk_production_data
+            )
 
         return instance

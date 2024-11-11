@@ -2,10 +2,11 @@
 Database models.
 """
 
-from django.db import models
-from django_celery_beat.models import PeriodicTask, CrontabSchedule
 import json
 import logging
+
+from django.db import models
+from django_celery_beat.models import CrontabSchedule, PeriodicTask
 
 logger = logging.getLogger(__name__)
 
@@ -104,7 +105,6 @@ class Feeding(models.Model):
             logger.info(f"Periodic task {task_name} deleted!")
         except PeriodicTask.DoesNotExist:
             logger.warning(f"Periodic task {task_name} does not exist!")
-            pass
         super().delete(*args, **kwargs)
 
 

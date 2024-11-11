@@ -1,14 +1,9 @@
 """URL mappings for the cow API."""
 
-from django.urls import (
-    path,
-    include,
-)
-
+from django.urls import include, path
 from rest_framework.routers import DefaultRouter
 
 from .views import CowViewSet
-
 
 router = DefaultRouter()
 router.register("cows", CowViewSet)
