@@ -55,7 +55,7 @@ docker exec -it django python manage.py generate_random_data --num_cows 20
 docker exec -it django python manage.py test cmanager
 ```
 
-4. **Interact with api**:
+5. **Interact with the api**:
 ```
 http://localhost:8000/docs/
 ```
