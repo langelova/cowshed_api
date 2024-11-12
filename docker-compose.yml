@@ -16,7 +16,6 @@ services:
       - POSTGRES_USER=devuser
       - POSTGRES_PASSWORD=changeme
     healthcheck:
-      # test: pg_isready -U devuser
       test: ["CMD", "pg_isready", "-U", "devuser", "-d", "devdb"]
 
   celery:
